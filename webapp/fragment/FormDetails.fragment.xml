@@ -1,0 +1,82 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    class="sapUiSizeCompact"
+>
+    <VBox>
+        <!-- <FormattedText
+            htmlText="{
+                path: 'viewModel>/formDetails/HeaderText',
+                formatter: '.formatter.formatterText'
+            }"
+            class="statusBoldText sapUiSmallMargin"
+        /> -->
+
+        <f:SimpleForm
+            editable="true"
+            layout="ColumnLayout"
+        >
+            <Label
+                text="{i18n>ref}"
+                class="statusTextBold"
+            />
+
+            <ComboBox
+                items="{viewModel>/applicatinNoSet}"
+                selectedKey="{viewModel>/formDetails/ApplicationNo}"
+                change="onComboboxChange"
+                selectionChange="onApplicationNoChange"
+                valueState="{viewModel>/valueState/ApplicationNo}"
+                valueStateText="{viewModel>/valueStateText/ApplicationNo}"
+                required="true"
+                editable="{= ${viewModel>/formDetails/Status} !== 'Approved' &amp;&amp; ${viewModel>/formDetails/Status} !== 'Confirmed' }"
+            >
+                <core:Item
+                    key="{viewModel>}"
+                    text="{viewModel>}"
+                />
+            </ComboBox>
+
+            <Label
+                text="{i18n>aSection}"
+                class="statusTextBold"
+            />
+
+            <ComboBox
+                selectedKey="{viewModel>/formDetails/TradePerformed}"
+                change="onComboboxChange"
+                editable="{= ${viewModel>/formDetails/Status} !== 'Approved' &amp;&amp; ${viewModel>/formDetails/Status} !== 'Confirmed' }"
+                items="{path: '/ZHR_CDS_IT_TRADEPERFORM_F4H'}"
+            >
+                <core:Item
+                    key="{StatusCode}"
+                    text="{Statustext}"
+                />
+            </ComboBox>
+
+            <Label
+                text="{i18n>bSection}"
+                class="statusTextBold"
+            />
+
+            <Input
+                value="{viewModel>/formDetails/SecurityDescription}"
+                editable="false"
+            />
+
+            <Label
+                text="{i18n>dated}"
+                class="statusTextBold"
+            />
+
+            <DatePicker
+                value="{viewModel>/formDetails/DisclosureDate}"
+                valueFormat="yyyyMMdd"
+                displayFormat="dd.MM.yyyy"
+                change="onDateChange"
+                editable="false"
+            />
+        </f:SimpleForm>
+    </VBox>
+</core:FragmentDefinition>

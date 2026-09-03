@@ -1,0 +1,58 @@
+<c:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:c="sap.ui.core"
+    class="sapUiSizeCompact">
+    <HBox
+        class="sapUiSmallMarginBegin"
+        justifyContent="SpaceBetween"
+        renderType="Bare"
+        wrap="Wrap">
+        <VBox
+            renderType="Bare"
+            wrap="Wrap">
+            <ObjectStatus
+                title="{i18n>employeeIdLabel}"
+                text="{path: 'viewModel>/formDetails/EmployeeId', formatter: '.formatter.formatBlankValue'}" />
+
+            <ObjectStatus
+                title="{i18n>employeeNameLabel}"
+                text="{path: 'viewModel>/formDetails/EmployeeName', formatter: '.formatter.formatBlankValue'}" />
+
+            <ObjectStatus
+                title="{i18n>companyCodeLabel}"
+                text="{path: 'viewModel>/formDetails/CompanyCode', formatter: '.formatter.formatBlankValue'}" />
+
+            <ObjectStatus
+                title="{i18n>gradeLabel}"
+                text="{path: 'viewModel>/formDetails/EmployeeGrade', formatter: '.formatter.formatBlankValue'}" />
+        </VBox>
+        <VBox
+            class="sapUiLargeMarginBegin"
+            renderType="Bare"
+            wrap="Wrap">
+            <ObjectStatus
+                title="{i18n>employeeSubGroupLabel}"
+                text="{path: 'viewModel>/formDetails/EmployeeSubgrp', formatter: '.formatter.formatBlankValue'}" />
+            <ObjectStatus
+                title="{i18n>employeeSubGroupDescLabel}"
+                text="{path: 'viewModel>/formDetails/EmployeeSubgrpText', formatter: '.formatter.formatBlankValue'}" />
+            <ObjectStatus
+                title="{i18n>personalSubAreaLabel}"
+                text="{path: 'viewModel>/formDetails/PersonnelSubArea', formatter: '.formatter.formatBlankValue'}" />
+            <ObjectStatus
+                title="{i18n>personalSubAreaDescLabel}"
+                text="{path: 'viewModel>/formDetails/PersonnelSubAreaText', formatter: '.formatter.formatBlankValue'}" />
+        </VBox>
+        <VBox
+            class="sapUiLargeMarginBegin"
+            renderType="Bare"
+            wrap="Wrap">
+            <ObjectStatus
+                title="{i18n>departmentLabel}"
+                text="{path: 'viewModel>/formDetails/EmployeeDepartment', formatter: '.formatter.formatBlankValue'}" />
+            <ObjectStatus
+                title="{i18n>positionLabel}"
+                text="{path: 'viewModel>/formDetails/PositionText', formatter: '.formatter.formatBlankValue'}" />
+        </VBox>
+    </HBox>
+</c:FragmentDefinition>

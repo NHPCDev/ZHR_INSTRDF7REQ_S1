@@ -1,0 +1,223 @@
+<mvc:View
+    controllerName="com.nhpc.zhrinstrdf7reqs1.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:table="sap.ui.table"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    class="sapUiSizeCompact"
+>
+    <f:DynamicPage
+        id="_IDGenDynamicPage1"
+        headerExpanded="true"
+        showFooter="true"
+    >
+        <f:header>
+            <f:DynamicPageHeader id="_IDGenDynamicPageHeader1">
+                <f:content>
+                    <fb:FilterBar
+                        id="filterbar"
+                        persistencyKey="myPersKey"
+                        useToolbar="false"
+                        search=".onSearchBtn"
+                    >
+                        <fb:filterGroupItems>
+                            <fb:FilterGroupItem
+                                id="_IDGenFilterGroupItem1"
+                                name="ApplicationNo"
+                                label="{i18n>applicationNo}"
+                                groupName="Group1"
+                                visibleInFilterBar="true"
+                            >
+                                <fb:control>
+                                    <Input
+                                        id="empID"
+                                        value="{viewModel>/filterData/ApplicationNo}"
+                                    />
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                        </fb:filterGroupItems>
+                        <fb:filterGroupItems>
+                            <fb:FilterGroupItem
+                                id="_IDGenFilterGroupItem2"
+                                name="ConfirmedOn"
+                                label="{i18n>ConfirmedOn}"
+                                groupName="Group1"
+                                visibleInFilterBar="true"
+                            >
+                                <fb:control>
+                                    <DatePicker
+                                        id="idConfirmedOn"
+                                        value="{viewModel>/filterData/ConfirmedOn}"
+                                        displayFormat="dd.MM.yyyy"
+                                        valueFormat="yyyyMMdd"
+                                        change="onDateChange"
+                                    />
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                        </fb:filterGroupItems>
+                        <fb:filterGroupItems>
+                            <fb:FilterGroupItem
+                                id="_IDGenFilterGroupItem5"
+                                name="AcceptedOn"
+                                label="{i18n>AcceptedOn}"
+                                groupName="Group1"
+                                visibleInFilterBar="true"
+                            >
+                                <fb:control>
+                                    <DatePicker
+                                        id="idAcceptedOn"
+                                        value="{viewModel>/filterData/AcceptedOn}"
+                                        displayFormat="dd.MM.yyyy"
+                                        valueFormat="yyyyMMdd"
+                                        change="onDateChange"
+                                    />
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                        </fb:filterGroupItems>
+                        <fb:filterGroupItems>
+                            <fb:FilterGroupItem
+                                id="_IDGenFilterGroupItem3"
+                                name="Status"
+                                label="{i18n>status}"
+                                groupName="Group1"
+                                visibleInFilterBar="true"
+                            >
+                                <fb:control>
+                                    <ComboBox
+                                        id="idStatus"
+                                        selectedKey="{viewModel>/filterData/Status}"
+                                        change="onComboboxChange"
+                                        items="{path: '/ZHR_CDS_IT_STATUSCODE_F4H'}"
+                                    >
+                                        <core:ListItem
+                                            key="{StatusCode}"
+                                            text="{Statustext}"
+                                        />
+                                    </ComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                        </fb:filterGroupItems>
+                    </fb:FilterBar>
+                </f:content>
+            </f:DynamicPageHeader>
+        </f:header>
+        <f:content>
+            <VBox id="_IDGenVBox1">
+                <Table
+                    id="idDashboardTable"
+                    items="{path:'/PreapprovedSet',filters: [
+                        {
+                            path: 'ApproverFlag',
+                            operator: 'EQ',
+                            value1:'R'   
+                        }
+                    ]}"
+                    growing="true"
+                    growingThreshold="20"
+                    width="100%"
+                    mode="None"
+                    autoPopinMode="true"
+                    alternateRowColors="true"
+                    sticky="ColumnHeaders,HeaderToolbar,InfoToolbar"
+                    updateFinished="onDashboardTableUpdateFinish"
+                >
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title
+                                id="dashBoardTitle"
+                                text="{= ${i18n>dashboardTableTitle} + ' (' + (${/HeaderSet} ? ${/HeaderSet}.length : 0) + ')' }"
+                            />
+                            <ToolbarSpacer />
+                            <Button
+                                text="{i18n>createBtnText}"
+                                press="onCreate"
+                                type="Emphasized"
+                                icon="sap-icon://add"
+                            />
+                            <Button
+                                text="{i18n>downloadReportBtnText}"
+                                press="onDownload"
+                                type="Reject"
+                                icon="sap-icon://excel-attachment"
+                            />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                   
+                        <Column>
+                            <Text text="{i18n>applicationNo}" />
+                        </Column>
+
+                        <Column>
+                            <Text text="{i18n>employeeID}" />
+                        </Column>
+
+                        <Column>
+                            <Text text="{i18n>ConfirmedOn}" />
+                        </Column>
+
+                        <Column>
+                            <Text text="{i18n>ConfirmedBy}" />
+                        </Column>
+
+                        <Column>
+                            <Text text="{i18n>acceptedOn}" />
+                        </Column>
+
+                        <Column>
+                            <Text text="{i18n>acceptedBy}" />
+                        </Column>
+
+                        <Column>
+                            <Text text="{i18n>status}" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem
+                            type="Navigation"
+                            press="onListItemPress"
+                        >
+                            <cells>
+                            <ObjectIdentifier title="{ApplicationNo}"></ObjectIdentifier>
+                                <ObjectIdentifier title="{Pernr}" text="{EmployeeName}"/>
+                                <Text
+                                    text="{
+                                        path: 'ConfirmedOn',
+                                        type: 'sap.ui.model.type.Date',
+                                        formatOptions: {
+                                            source: {
+                                                pattern: 'dd.MM.yyyy'
+                                            },
+                                            pattern: 'dd.MM.yyyy'
+                                        }
+                                }"
+                                />
+                                <Text text="{ConfirmBy}"></Text>
+                                <Text
+                                    text="{
+                                        path: 'AcceptedOn',
+                                        type: 'sap.ui.model.type.Date',
+                                        formatOptions: {
+                                            source: {
+                                                pattern: 'dd.MM.yyyy'
+                                            },
+                                            pattern: 'dd.MM.yyyy'
+                                        }
+                                }"
+                                />
+                                <Text text="{AcceptedBy}"></Text>
+                                <ObjectStatus
+                                    text="{path:'Status', formatter:'.formatter.formatTitleCase'}"
+                                    class="sapMObjectStatusMedium statusBoldText"
+                                    state="{path:'Status',formatter:'.formatter.formatStatusState'}"
+                                />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

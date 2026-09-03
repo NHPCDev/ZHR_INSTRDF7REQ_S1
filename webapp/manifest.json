@@ -1,0 +1,164 @@
+{
+  "_version": "1.60.0",
+  "sap.app": {
+    "id": "com.nhpc.zhrinstrdf7reqs1",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.28.0",
+      "toolsId": "8662a278-3b97-4888-9a26-371221240dac"
+    },
+    "dataSources": {
+      "ZHR_INSIDER_TRADING_ANNO_MDL": {
+        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZHR_INSIDER_TRADING_ANNO_MDL',Version='0001')/$value/",
+        "type": "ODataAnnotation",
+        "settings": {
+          "localUri": "localService/mainService/ZHR_INSIDER_TRADING_ANNO_MDL.xml"
+        }
+      },
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZHR_INSIDER_TRADING_SRV/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "ZHR_INSIDER_TRADING_ANNO_MDL"
+          ],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "PreAppDis-create": {
+          "semanticObject": "PreAppDis",
+          "action": "create",
+          "title": "{{PreAppDis-create.flpTitle}}",
+          "subTitle": "{{PreAppDis-create.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "fullWidth": true,
+    "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://activity-items",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.142.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.nhpc.zhrinstrdf7reqs1.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {}
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "com.nhpc.zhrinstrdf7reqs1.view",
+        "async": true,
+        "viewPath": "com.nhpc.zhrinstrdf7reqs1.view"
+      },
+      "routes": [
+        {
+          "name": "RouteDashboard",
+          "pattern": ":?query:",
+          "target": [
+            "TargetDashboard"
+          ]
+        },
+        {
+          "name": "RouteDetail",
+          "pattern": "Detail/{Year}/{ApplicationNo}/{Pernr}",
+          "target": [
+            "TargetDetail"
+          ]
+        },
+        {
+          "name":"RouteErrorPage",
+          "pattern": "Error",
+          "target":[
+            "TargetError"
+          ]
+        }
+      ],
+      "targets": {
+        "TargetDashboard": {
+          "id": "Dashboard",
+          "name": "Dashboard"
+        },
+        "TargetDetail": {
+          "id": "Detail",
+          "name": "Detail"
+        },
+        "TargetError":{
+          "id":"ErrorPage",
+          "name":"ErrorPage"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "com.nhpc.zhrinstrdf7reqs1.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "comnhpczhrinstrdf7reqs1"
+  }
+}
