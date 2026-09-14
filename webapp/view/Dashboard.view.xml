@@ -57,7 +57,7 @@
                                 </fb:control>
                             </fb:FilterGroupItem>
                         </fb:filterGroupItems>
-                        <fb:filterGroupItems>
+                        <!-- <fb:filterGroupItems>
                             <fb:FilterGroupItem
                                 id="_IDGenFilterGroupItem5"
                                 name="AcceptedOn"
@@ -75,7 +75,7 @@
                                     />
                                 </fb:control>
                             </fb:FilterGroupItem>
-                        </fb:filterGroupItems>
+                        </fb:filterGroupItems> -->
                         <fb:filterGroupItems>
                             <fb:FilterGroupItem
                                 id="_IDGenFilterGroupItem3"

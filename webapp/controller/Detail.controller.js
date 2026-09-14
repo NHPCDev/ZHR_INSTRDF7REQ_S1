@@ -287,6 +287,10 @@ sap.ui.define([
                             oViewModel.setProperty("/formDetails/PersonnelSubAreaText", oResp.results[0].PLANT);
                             oViewModel.setProperty("/formDetails/EmployeeDepartment", `${oResp.results[0].DEP_CODE} - ${oResp.results[0].DEP}`);
                             oViewModel.setProperty("/formDetails/PositionText", oResp.results[0].DESIG);
+                            oViewModel.setProperty("/formDetails/USRID", oResp.results[0].USRID);
+                            oViewModel.setProperty("/formDetails/MOBILE", oResp.results[0].MOBILE);
+                            oViewModel.setProperty("/formDetails/EMAIL", oResp.results[0].EMAIL);
+                            oViewModel.setProperty("/formDetails/DATE_JOIN", oResp.results[0].DATE_JOIN);
                         }
                         await this._getHistoryWithRemarksData(oResp.results[0].PERNR);
                         resolve();
@@ -629,11 +633,7 @@ sap.ui.define([
                 TradePerformed: oFormDetails.TradePerformed,
                 SecurityDescription: oFormDetails.SecurityDescription,
                 TransactionDate: oFormDetails.TransactionDate,
-                PREAPPROVED_TO_SECURITY: oTableData || [],
-                // ContractNoteFlg: aDocs[0].selected ? "X" : "",
-                // PaymentProofFlg: aDocs[1].selected ? "X" : "",
-                // BankStatementFlg: aDocs[2].selected ? "X" : "",
-                // DeliverySlipFlg: aDocs[3].selected ? "X" : ""
+                PREAPPROVED_TO_SECURITY: oTableData || []
             };
             return oPayload;
         },
