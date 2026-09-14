@@ -174,6 +174,7 @@ sap.ui.define([
                             ...oViewModel.getProperty("/formDetails"),
                             ...oData.results[0]
                         });
+                        oViewModel.setProperty("/formDetails/Designation", oData.results[0].Designation);
                         oViewModel.setProperty("/tableData", oData.results[0].PREAPPROVED_TO_SECURITY.results)
                         let sText = oData.results[0].UndertakingText;
 
@@ -285,12 +286,14 @@ sap.ui.define([
                             oViewModel.setProperty("/formDetails/EmployeeSubgrpText", oResp.results[0].GRADE);
                             oViewModel.setProperty("/formDetails/PersonnelSubArea", oResp.results[0].WERKS);
                             oViewModel.setProperty("/formDetails/PersonnelSubAreaText", oResp.results[0].PLANT);
-                            oViewModel.setProperty("/formDetails/EmployeeDepartment", `${oResp.results[0].DEP_CODE} - ${oResp.results[0].DEP}`);
-                            oViewModel.setProperty("/formDetails/PositionText", oResp.results[0].DESIG);
+                            oViewModel.setProperty("/formDetails/EmployeeDepartment", `${oResp.results[0].DEP_CODE} - ${oResp.results[0].DEP}`);                            
                             oViewModel.setProperty("/formDetails/USRID", oResp.results[0].USRID);
                             oViewModel.setProperty("/formDetails/MOBILE", oResp.results[0].MOBILE);
                             oViewModel.setProperty("/formDetails/EMAIL", oResp.results[0].EMAIL);
                             oViewModel.setProperty("/formDetails/DATE_JOIN", oResp.results[0].DATE_JOIN);
+                            if(sPernr === "New"){
+                                oViewModel.setProperty("/formDetails/Designation", oResp.results[0].DESIG);
+                            }
                         }
                         await this._getHistoryWithRemarksData(oResp.results[0].PERNR);
                         resolve();
@@ -629,6 +632,7 @@ sap.ui.define([
                 Status: this.sActionFlag,
                 ApplicationNo: oFormDetails.ApplicationNo,
                 Pernr: oFormDetails.EmployeeId,
+                Designation: oFormDetails.Designation,
                 DisclosureDate: oFormDetails.DisclosureDate,
                 TradePerformed: oFormDetails.TradePerformed,
                 SecurityDescription: oFormDetails.SecurityDescription,

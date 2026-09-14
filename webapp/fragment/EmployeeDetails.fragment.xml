@@ -4,7 +4,8 @@
     <HBox class="sapUiSmallMarginBegin" justifyContent="SpaceBetween" renderType="Bare" wrap="Wrap"   >
         <VBox renderType="Bare" wrap="Wrap" >
             <ObjectStatus title="{i18n>employeeIdLabel}" text="{path: 'viewModel>/formDetails/EmployeeId', formatter: '.formatter.formatBlankValue'}" />
-            <ObjectStatus title="{i18n>employeeNameLabel}" text="{path: 'viewModel>/formDetails/EmployeeName', formatter: '.formatter.formatBlankValue'}" />       
+            <ObjectStatus title="{i18n>employeeNameLabel}" text="{path: 'viewModel>/formDetails/EmployeeName', formatter: '.formatter.formatBlankValue'}" />
+            <ObjectStatus title="{i18n>designation}" text="{path: 'viewModel>/formDetails/Designation', formatter: '.formatter.formatBlankValue'}" />       
         </VBox>
         <VBox class="sapUiLargeMarginBegin" renderType="Bare" wrap="Wrap" >
             <ObjectStatus title="{i18n>userID}" text="{path: 'viewModel>/formDetails/USRID', formatter: '.formatter.formatBlankValue'}" />
