@@ -157,11 +157,6 @@
                         <Column>
                             <Text text="{i18n>ConfirmedOn}" />
                         </Column>
-
-                        <Column>
-                            <Text text="{i18n>ConfirmedBy}" />
-                        </Column>
-
                         <Column>
                             <Text text="{i18n>acceptedOn}" />
                         </Column>
@@ -194,7 +189,6 @@
                                         }
                                 }"
                                 />
-                                <Text text="{ConfirmBy}"></Text>
                                 <Text
                                     text="{
                                         path: 'AcceptedOn',

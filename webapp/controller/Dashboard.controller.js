@@ -8,9 +8,10 @@ sap.ui.define([
     "com/nhpc/zhrinstrdf7reqs1/utils/formatter",
     "com/nhpc/zhrinstrdf7reqs1/utils/messenger",
     "sap/ui/core/BusyIndicator",
-], (BaseController, Filter, FilterOperator, Spreadsheet, Fragment, ValueState, formatter, messenger, BusyIndicator) => {
+    "sap/ui/export/library"
+], (BaseController, Filter, FilterOperator, Spreadsheet, Fragment, ValueState, formatter, messenger, BusyIndicator,exportLibrary) => {
     "use strict";
-
+    var EdmType = exportLibrary.EdmType;
     return BaseController.extend("com.nhpc.zhrinstrdf7reqs1.controller.Dashboard", {
         formatter: formatter,
         onInit() {
@@ -229,50 +230,22 @@ sap.ui.define([
             }
         },
         onDownload: function () {
-            var oModel = this.getModel();
-            let oResourceBundle = this.getResourceBundle();
-            BusyIndicator.show(0);
-            oModel.read("/PreapprovedSet", {
-                filters: [
-                    new sap.ui.model.Filter(
-                        "ApproverFlag",
-                        sap.ui.model.FilterOperator.EQ,
-                        "R"
-                    )
-                ],
-                success: function (oData) {
-                    var aData = oData.results.map(function (oData) {
-                        var oRow = Object.assign({}, oData);
-                        oRow.ConfirmedOn =
-                            formatter.formatDate(oRow.ConfirmedOn);
-                        oRow.AcceptedOn =
-                            formatter.formatDate(oRow.AcceptedOn);
-                        oRow.DatePlacementCOD =
-                            formatter.formatDate(oRow.DatePlacementCOD);
-                        oRow.CreatedOn =
-                            formatter.formatDate(oRow.CreatedOn);
-                        return oRow;
-                    });
-                    var oSettings = {
-                        workbook: {
-                            columns: this.createColumnConfig()
-                        },
-                        dataSource: aData,
-                        fileType: "xlsx",
-                        fileName: this.getResourceBundle().getText("title")
-                    };
-                    var oSheet = new Spreadsheet(oSettings);
-                    oSheet.build()
-                        .finally(function () {
-                            oSheet.destroy();
-                            BusyIndicator.hide();
-                        });
-                }.bind(this),
-                error: function () {
-                    BusyIndicator.hide();
-                    messenger.error(oResourceBundle.getText("failedToDownloadData"));
-                }
-            });
+            var oTable = this.byId("idDashboardTable");
+            var oBinding = oTable.getBinding("items");
+            var aCols = this.createColumnConfig();
+            var oSettings = {
+                workbook: {
+                    columns: aCols
+                },
+                dataSource: oBinding,
+                fileType: "xlsx",
+                fileName: this.getResourceBundle().getText("title")
+            };
+            var oSheet = new Spreadsheet(oSettings);
+            oSheet.build()
+                .finally(function () {
+                    oSheet.destroy();
+                });
         },
         createColumnConfig: function () {
             var aCols = [];
@@ -290,15 +263,17 @@ sap.ui.define([
             });
             aCols.push({
                 label: this.getResourceBundle().getText("ConfirmedOn"),
-                property: "ConfirmedOn"
-            });
-            aCols.push({
-                label: this.getResourceBundle().getText("ConfirmedBy"),
-                property: "ConfirmBy"
+                property: "ConfirmedOn",
+                type: EdmType.Date,
+                inputFormat: "yyyymmdd",
+                format: "dd.mm.yyyy"
             });
             aCols.push({
                 label: this.getResourceBundle().getText("acceptedOn"),
-                property: "AcceptedOn"
+                property: "AcceptedOn",
+                type: EdmType.Date,
+                inputFormat: "yyyymmdd",
+                format: "dd.mm.yyyy"
             });
             aCols.push({
                 label: this.getResourceBundle().getText("acceptedBy"),

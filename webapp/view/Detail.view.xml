@@ -104,6 +104,7 @@
                             <uxap:ObjectPageSection
                                 title="{i18n>securityDetails}"
                                 titleUppercase="false"
+                                visible="{= ${viewModel>/formDetails/TradePerformed} ==='Yes' }"
                             >
                                 <uxap:subSections>
                                     <uxap:ObjectPageSubSection>
@@ -121,7 +122,7 @@
                             <uxap:ObjectPageSection
                                 title="{i18n>undertaking}"
                                 titleUppercase="false"
-                                visible="{= ${viewModel>/formDetails/TradePerformed} !== 'No'}"
+                                visible="{= ${viewModel>/formDetails/TradePerformed} ==='Yes' }"
                             >
                                 <uxap:subSections>
                                     <uxap:ObjectPageSubSection>

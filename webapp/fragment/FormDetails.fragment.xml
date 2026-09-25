@@ -5,14 +5,6 @@
     class="sapUiSizeCompact"
 >
     <VBox>
-        <!-- <FormattedText
-            htmlText="{
-                path: 'viewModel>/formDetails/HeaderText',
-                formatter: '.formatter.formatterText'
-            }"
-            class="statusBoldText sapUiSmallMargin"
-        /> -->
-
         <f:SimpleForm
             editable="true"
             layout="ColumnLayout"
@@ -45,7 +37,10 @@
 
             <ComboBox
                 selectedKey="{viewModel>/formDetails/TradePerformed}"
-                change="onComboboxChange"
+                change="onTradePerformedChange"
+                valueState="{viewModel>/valueState/TradePerformed}"
+                valueStateText="{viewModel>/valueStateText/TradePerformed}"
+                required="true"
                 editable="{= ${viewModel>/formDetails/Status} !== 'Approved' &amp;&amp; ${viewModel>/formDetails/Status} !== 'Confirmed' }"
                 items="{path: '/ZHR_CDS_IT_TRADEPERFORM_F4H'}"
             >

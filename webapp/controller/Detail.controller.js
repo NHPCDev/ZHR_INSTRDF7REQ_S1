@@ -32,32 +32,42 @@ sap.ui.define([
                 if (sApplicationNo === "New") {
                     oViewModel.setProperty("/selectedYear", sYear);
                     oViewModel.setProperty("/formDetails/Status", "New");
-                    this.byId("objPageHeader").setText(this.getResourceBundle().getText("createDialogTitle", this.getModel("viewModel").getProperty("/selectedYear")));
-                    this.byId("objPageHeader1").setText(this.getResourceBundle().getText("createDialogTitle", this.getModel("viewModel").getProperty("/selectedYear")));
+                    this.byId("objPageHeader").setText(
+                        this.getResourceBundle().getText(
+                            "createDialogTitle",
+                            oViewModel.getProperty("/selectedYear")
+                        )
+                    );
+                    this.byId("objPageHeader1").setText(
+                        this.getResourceBundle().getText(
+                            "createDialogTitle",
+                            oViewModel.getProperty("/selectedYear")
+                        )
+                    );
                     if (!applicatinNoSet) {
                         let aFilters = [];
-                        aFilters.push(new Filter("Year", FilterOperator.EQ, sYear));
+                        aFilters.push(
+                            new Filter("Year", FilterOperator.EQ, sYear)
+                        );
                         await new Promise((resolve, reject) => {
                             oModel.read("/PreapprovedSet", {
                                 filters: aFilters,
                                 success: function (oData) {
-                                    let applicationSet = oData.results.filter(i => i.Status === "New").map(i => i.ApplicationNo);
+                                    let applicationSet = oData.results
+                                        .filter(i => i.Status === "New")
+                                        .map(i => i.ApplicationNo);
                                     oViewModel.setProperty(
                                         "/applicatinNoSet",
                                         applicationSet
                                     );
                                     if (applicationSet.length === 0) {
                                         BusyIndicator.hide();
-                                        messenger.error(oResourceBundle.getText("noDataErrorMsg"));
+                                        messenger.error(
+                                            oResourceBundle.getText("noDataErrorMsg")
+                                        );
                                         return;
                                     }
-                                    let sText = oData.results[0].UndertakingText;
-
-                                    let aLines = sText.split("\n");
-                                    let aDocs = [];
-                                    let aIntro = [];
-                                    let aDeclaration = [];
-
+                                    let oResult = oData.results[0];
                                     let aFlags = [
                                         "ContractNoteFlg",
                                         "PaymentProofFlg",
@@ -65,45 +75,73 @@ sap.ui.define([
                                         "DeliverySlipFlg"
                                     ];
 
+                                    let aBackendFlags = [
+                                        "CheckBox1",
+                                        "CheckBox2",
+                                        "CheckBox3",
+                                        "CheckBox4"
+                                    ];
+                                    aBackendFlags.forEach(function (sBackendFlag, iIndex) {
+                                        let vValue = oResult[sBackendFlag];
+                                        oViewModel.setProperty(
+                                            "/formDetails/" + aFlags[iIndex],
+                                            vValue === true ||
+                                            vValue === "X" ||
+                                            vValue === "true"
+                                        );
+                                    });
+                                    let sText = oResult.UndertakingText;
+                                    let aLines = sText.split("\n");
+                                    let aDocs = [];
+                                    let aIntro = [];
+                                    let aDeclaration = [];
                                     let iDocIndex = 0;
                                     let bDocSection = false;
                                     let bDeclarationSection = false;
-
                                     aLines.forEach(function (line) {
-
                                         if (/^\d+\)/.test(line.trim())) {
-                                            bDocSection = true;
-
                                             aDocs.push({
                                                 text: line.replace(/^\d+\)\s*/, ""),
-                                                flagPath: "/formDetails/" + aFlags[iDocIndex]
+                                                flagPath: "/formDetails/" + aFlags[iDocIndex],
+                                                selected: oViewModel.getProperty(
+                                                    "/formDetails/" + aFlags[iDocIndex]
+                                                )
                                             });
-
                                             iDocIndex++;
                                             return;
                                         }
-
-                                        if (bDocSection) {
-                                            bDeclarationSection = true;
-                                        }
-
                                         if (!bDocSection) {
                                             aIntro.push(line);
-                                        } else if (bDeclarationSection) {
+                                        } else {
                                             aDeclaration.push(line);
                                         }
                                     });
-                                    oViewModel.setProperty("/formDetails/HeaderText", oData.results[0].HeaderText);
-                                    oViewModel.setProperty("/undertakingIntro", aIntro.join("\n"));
-                                    oViewModel.setProperty("/undertakingDocs", aDocs);
-                                    oViewModel.setProperty("/undertakingDeclaration", aDeclaration.join("\n"));
+                                    oViewModel.setProperty(
+                                        "/formDetails/HeaderText",
+                                        oResult.HeaderText
+                                    );
+                                    oViewModel.setProperty(
+                                        "/undertakingIntro",
+                                        aIntro.join("\n")
+                                    );
+                                    oViewModel.setProperty(
+                                        "/undertakingDocs",
+                                        aDocs
+                                    );
+                                    oViewModel.setProperty(
+                                        "/undertakingDeclaration",
+                                        aDeclaration.join("\n")
+                                    );
                                     BusyIndicator.hide();
                                     resolve();
                                 },
                                 error: function (oError) {
                                     BusyIndicator.hide();
-                                    let oResponse = JSON.parse(oError.responseText);
-                                    let sMessage = oResponse.error.message.value;
+                                    let oResponse = JSON.parse(
+                                        oError.responseText
+                                    );
+                                    let sMessage =
+                                        oResponse.error.message.value;
                                     messenger.error(sMessage);
                                     reject(oError);
                                 }
@@ -113,16 +151,34 @@ sap.ui.define([
                 } else {
                     await this.setFormDetails(sApplicationNo);
                     await this.onApplicationNoChange();
-                    this.byId("objPageHeader").setText(this.getResourceBundle().getText("editDialogTitle", sApplicationNo));
-                    this.byId("objPageHeader1").setText(this.getResourceBundle().getText("editDialogTitle", sApplicationNo));
+                    this.byId("objPageHeader").setText(
+                        this.getResourceBundle().getText(
+                            "editDialogTitle",
+                            sApplicationNo
+                        )
+                    );
+                    this.byId("objPageHeader1").setText(
+                        this.getResourceBundle().getText(
+                            "editDialogTitle",
+                            sApplicationNo
+                        )
+                    );
                 }
                 oViewModel.setProperty("/selectedYear", sYear);
                 await this.resetValueStates();
                 await this.getDefaultEmployeeDetails(sPernr);
             } catch (oError) {
-                messenger.error(JSON.parse(oError.responseText).error.message.value, function () {
-                    this.getRouter().navTo("RouteDashboard", {}, {}, true);
-                }.bind(this));
+                messenger.error(
+                    JSON.parse(oError.responseText).error.message.value,
+                    function () {
+                        this.getRouter().navTo(
+                            "RouteDashboard",
+                            {},
+                            {},
+                            true
+                        );
+                    }.bind(this)
+                );
             } finally {
                 BusyIndicator.hide();
             }
@@ -154,7 +210,11 @@ sap.ui.define([
         setFormDetails: async function (sApplicationNo) {
             let oModel = this.getModel();
             let oViewModel = this.getModel("viewModel");
-            let aFilters = new Filter("ApplicationNo", FilterOperator.EQ, sApplicationNo);
+            let aFilters = new Filter(
+                "ApplicationNo",
+                FilterOperator.EQ,
+                sApplicationNo
+            );
             await new Promise((resolve, reject) => {
                 oModel.read("/PreapprovedSet", {
                     filters: [aFilters],
@@ -164,70 +224,102 @@ sap.ui.define([
                     success: function (oData) {
                         if (oData.results.length === 0) {
                             messenger.error("No Data Found");
+                            resolve();
                             return;
                         }
+                        let oResult = oData.results[0];
                         oViewModel.setProperty(
                             "/applicatinNoSet",
                             oData.results.map(i => i.ApplicationNo)
                         );
-                        oViewModel.setProperty("/formDetails", {
-                            ...oViewModel.getProperty("/formDetails"),
-                            ...oData.results[0]
-                        });
-                        oViewModel.setProperty("/formDetails/Designation", oData.results[0].Designation);
-                        oViewModel.setProperty("/tableData", oData.results[0].PREAPPROVED_TO_SECURITY.results)
-                        let sText = oData.results[0].UndertakingText;
-
-                        let aLines = sText.split("\n");
-                        let aDocs = [];
-                        let aIntro = [];
-                        let aDeclaration = [];
-
+                        oViewModel.setProperty(
+                            "/formDetails",
+                            {
+                                ...oViewModel.getProperty("/formDetails"),
+                                ...oResult
+                            }
+                        );
+                        oViewModel.setProperty(
+                            "/formDetails/Designation",
+                            oResult.Designation
+                        );
                         let aFlags = [
                             "ContractNoteFlg",
                             "PaymentProofFlg",
                             "BankStatementFlg",
                             "DeliverySlipFlg"
                         ];
-
+                        let aBackendFlags = [
+                            "CheckBox1",
+                            "CheckBox2",
+                            "CheckBox3",
+                            "CheckBox4"
+                        ];
+                        aBackendFlags.forEach(function (sBackendFlag, iIndex) {
+                            let vValue = oResult[sBackendFlag];
+                            oViewModel.setProperty(
+                                "/formDetails/" + aFlags[iIndex],
+                                vValue === true ||
+                                vValue === "X" ||
+                                vValue === "true"
+                            );
+                        });
+                        oViewModel.setProperty(
+                            "/tableData",
+                            oResult.PREAPPROVED_TO_SECURITY.results
+                        );
+                        let sText = oResult.UndertakingText;
+                        let aLines = sText.split("\n");
+                        let aDocs = [];
+                        let aIntro = [];
+                        let aDeclaration = [];
                         let iDocIndex = 0;
                         let bDocSection = false;
                         let bDeclarationSection = false;
-
                         aLines.forEach(function (line) {
-
                             if (/^\d+\)/.test(line.trim())) {
-                                bDocSection = true;
-
                                 aDocs.push({
                                     text: line.replace(/^\d+\)\s*/, ""),
-                                    selected: true
+                                    flagPath: "/formDetails/" + aFlags[iDocIndex],
+                                    selected: oViewModel.getProperty(
+                                        "/formDetails/" + aFlags[iDocIndex]
+                                    )
                                 });
-
                                 iDocIndex++;
                                 return;
                             }
-
-                            if (bDocSection) {
-                                bDeclarationSection = true;
-                            }
-
                             if (!bDocSection) {
                                 aIntro.push(line);
-                            } else if (bDeclarationSection) {
+                            } else {
                                 aDeclaration.push(line);
                             }
                         });
-
-                        oViewModel.setProperty("/undertakingIntro", aIntro.join("\n"));
-                        oViewModel.setProperty("/undertakingDocs", aDocs);
-                        oViewModel.setProperty("/undertakingDeclaration", aDeclaration.join("\n"));
+                        oViewModel.setProperty(
+                            "/undertakingIntro",
+                            aIntro.join("\n")
+                        );
+                        oViewModel.setProperty(
+                            "/undertakingDocs",
+                            aDocs
+                        );
+                        oViewModel.setProperty(
+                            "/undertakingDeclaration",
+                            aDeclaration.join("\n")
+                        );
                         resolve();
                     },
                     error: function (oError) {
-                        messenger.error(JSON.parse(oError.responseText).error.message.value, function () {
-                            this.getRouter().navTo("RouteDashboard", {}, {}, true);
-                        }.bind(this));
+                        messenger.error(
+                            JSON.parse(oError.responseText).error.message.value,
+                            function () {
+                                this.getRouter().navTo(
+                                    "RouteDashboard",
+                                    {},
+                                    {},
+                                    true
+                                );
+                            }.bind(this)
+                        );
                         reject(oError);
                     }
                 });
@@ -286,12 +378,12 @@ sap.ui.define([
                             oViewModel.setProperty("/formDetails/EmployeeSubgrpText", oResp.results[0].GRADE);
                             oViewModel.setProperty("/formDetails/PersonnelSubArea", oResp.results[0].WERKS);
                             oViewModel.setProperty("/formDetails/PersonnelSubAreaText", oResp.results[0].PLANT);
-                            oViewModel.setProperty("/formDetails/EmployeeDepartment", `${oResp.results[0].DEP_CODE} - ${oResp.results[0].DEP}`);                            
+                            oViewModel.setProperty("/formDetails/EmployeeDepartment", `${oResp.results[0].DEP_CODE} - ${oResp.results[0].DEP}`);
                             oViewModel.setProperty("/formDetails/USRID", oResp.results[0].USRID);
                             oViewModel.setProperty("/formDetails/MOBILE", oResp.results[0].MOBILE);
                             oViewModel.setProperty("/formDetails/EMAIL", oResp.results[0].EMAIL);
                             oViewModel.setProperty("/formDetails/DATE_JOIN", oResp.results[0].DATE_JOIN);
-                            if(sPernr === "New"){
+                            if (sPernr === "New") {
                                 oViewModel.setProperty("/formDetails/Designation", oResp.results[0].DESIG);
                             }
                         }
@@ -330,11 +422,11 @@ sap.ui.define([
                             oViewModel.setProperty("/formDetails/DPClientID", oData.results[0].FolioNoDPClientID);
                             oViewModel.setProperty("/formDetails/ValidityDate", oData.results[0].ValidityDate);
                             oViewModel.setProperty("/formDetails/SecurityDescription", oData.results[0].Natureofsecurity);
-                            oViewModel.setProperty("/formDetails/PAN",oData.results[0].PAN)
-                            if(oData.results[0].SelfOrRelative === "SELF"){
-                                oViewModel.setProperty("/formDetails/HolderName",oData.results[0].EmployeeName);
+                            oViewModel.setProperty("/formDetails/PAN", oData.results[0].PAN)
+                            if (oData.results[0].SelfOrRelative === "SELF") {
+                                oViewModel.setProperty("/formDetails/HolderName", oData.results[0].EmployeeName);
                             } else {
-                                oViewModel.setProperty("/formDetails/HolderName",oData.results[0].ImmediateRelativeName);
+                                oViewModel.setProperty("/formDetails/HolderName", oData.results[0].ImmediateRelativeName);
                             }
                             BusyIndicator.hide();
                             resolve();
@@ -561,6 +653,27 @@ sap.ui.define([
                     let oPayload = this.createRequestPayload();
                     oModel.create("/PreapprovedSet", oPayload, {
                         success: function (oResp) {
+                            let oData = oResp;
+                            var sNotificationId = oData.BTPNotification;
+                            var sApproverMail = oData.ApproverMailId;
+                            var sApplicationNo = oData.ApplicationNo;
+                            if (sNotificationId && sApproverMail) {
+                                var aApproverMail = sApproverMail.split(",").map(function (sMail) {
+                                    return sMail.trim();
+                                }).filter(Boolean);
+                                this.NotificationID = sNotificationId;
+                                this.ApproverID = aApproverMail;
+                                this.sRequestNumber = sApplicationNo;
+                                this.RequesterName = sap.ushell.Container.getUser().getFullName();
+                                var oNotifyPayload = this.createNotificationPayload(
+                                    this.NotificationID,
+                                    this.ApproverID,
+                                    this.sRequestNumber,
+                                    this.RequesterName
+                                );
+                                console.log(oNotifyPayload)
+                                this.sendNotification(oNotifyPayload);
+                            }
                             BusyIndicator.hide();
                             messenger.success(oResourceBundle.getText("FinalSuccessMsg", oResp.ApplicationNo), () => {
                                 this.getRouter().navTo("RouteDashboard", {}, {}, true);
@@ -589,17 +702,6 @@ sap.ui.define([
             } else {
                 oViewModel.setProperty("/valueState/ApplicationNo", "None");
                 oViewModel.setProperty("/valueStateText/ApplicationNo", "");
-            }
-            if (aErrors.length > 0) {
-                messenger.error(aErrors.join("\n"));
-                return false;
-            }
-            const aDocs = oViewModel.getProperty("/undertakingDocs");
-            const bAllSelected = aDocs.every(function (oDoc) {
-                return oDoc.selected;
-            });
-            if (!bAllSelected && oViewModel.getProperty("/formDetails/TradePerformed") === "Yes") {
-                aErrors.push(oResourceBundle.getText("atleastOneUTErrorMsg"));
             }
             if (aErrors.length > 0) {
                 messenger.error(aErrors.join("\n"));
@@ -637,8 +739,15 @@ sap.ui.define([
                 TradePerformed: oFormDetails.TradePerformed,
                 SecurityDescription: oFormDetails.SecurityDescription,
                 TransactionDate: oFormDetails.TransactionDate,
-                PREAPPROVED_TO_SECURITY: oTableData || []
+                PREAPPROVED_TO_SECURITY: oTableData || [],
+                CheckBox1: aDocs[0] ? (aDocs[0].selected ? "X" : "") : "",
+                CheckBox2: aDocs[1] ? (aDocs[1].selected ? "X" : "") : "",
+                CheckBox3: aDocs[2] ? (aDocs[2].selected ? "X" : "") : "",
+                CheckBox4: aDocs[3] ? (aDocs[3].selected ? "X" : "") : ""
             };
+            if (this.sActionFlag === "Confirmed") {
+                oPayload.BTPNotification = crypto.randomUUID();
+            }
             return oPayload;
         },
         validateSubmitRequestDetails: function () {
@@ -659,8 +768,16 @@ sap.ui.define([
                 oViewModel.setProperty("/valueState/ApplicationNo", "None");
                 oViewModel.setProperty("/valueStateText/ApplicationNo", "");
             }
+            if (!oFormDetails.TradePerformed) {
+                aErrors.push(oResourceBundle.getText("boughtSoldSubscribedRequired"));
+                oViewModel.setProperty("/valueState/TradePerformed", "Error");
+                oViewModel.setProperty("/valueStateText/TradePerformed", oResourceBundle.getText("boughtSoldSubscribedRequired"));
+            } else {
+                oViewModel.setProperty("/valueState/TradePerformed", "None");
+                oViewModel.setProperty("/valueStateText/TradePerformed", "");
+            }
             if (aErrors.length > 0) {
-                messenger.error(aErrors.join("\n"));
+                messenger.error(oResourceBundle.getText("validationErrorMsg"));
                 return false;
             } else {
                 if (sTableData.length === 0 && oViewModel.getProperty("/formDetails/TradePerformed") === "Yes") {
@@ -674,6 +791,14 @@ sap.ui.define([
                     return false;
                 }
                 return true;
+            }
+        },
+        onTradePerformedChange: async function (oEvent) {
+            await this.onComboboxChange(oEvent);
+            let sTradePerformed = oEvent.getSource()?.getSelectedKey();
+            let oViewModel = this.getModel("viewModel");
+            if (sTradePerformed === "No") {
+                oViewModel.setProperty("/tableData", []);
             }
         }
     });
